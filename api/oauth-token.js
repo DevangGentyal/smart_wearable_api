@@ -7,6 +7,7 @@ export default async function handler(req, res) {
 
   try {
     const { code } = req.body;
+    console.log("Received code:", code);
 
     const tokenResponse = await axios.post(
       "https://oauth2.googleapis.com/token",
