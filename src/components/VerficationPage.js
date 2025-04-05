@@ -51,9 +51,7 @@ function VerificationPage() {
   }, [location]);
 
 
-// VerifyFirebase
-const verifyWithFirebase = async (tokenParam, emailParam) => {
-  
+  const verifyWithFirebase = async (tokenParam, emailParam) => {
     try {
       console.log("Step 1: Fetching guardian_invite with token:", tokenParam);
       setVerificationStep("1. Checking invitation link validity");
@@ -62,15 +60,24 @@ const verifyWithFirebase = async (tokenParam, emailParam) => {
       const docSnap = await getDoc(docRef);
   
       if (!docSnap.exists()) {
-        console.error("Invalid or expired token");
+        console.error("Invalid Token");
         setErrorType("invalid_token");
         throw new Error("This invitation link is invalid or has expired.");
       }
   
-      setVerificationStep("2. Validating invitation details");
       const inviteData = docSnap.data();
       console.log("Invite data retrieved:", inviteData);
   
+      // Expiration Check
+      const expiresAt = inviteData.expires_at?.toDate(); // Convert Firestore timestamp to JS Date
+      const now = new Date();
+      if (!expiresAt || now > expiresAt) {
+        console.error("Token has Expired");
+        setErrorType("expired_token");
+        throw new Error("This invitation link has expired.");
+      }
+  
+      setVerificationStep("2. Validating invitation details");
       const guardianEmail = inviteData.guardian_email;
       setInvitedEmail(guardianEmail);
   
@@ -123,6 +130,7 @@ const verifyWithFirebase = async (tokenParam, emailParam) => {
       setVerificationError(error.message || "An unknown error occurred.");
     }
   };
+  
 
   // Handle OAuth verification
   const handleVerify = () => {
@@ -151,6 +159,12 @@ const verifyWithFirebase = async (tokenParam, emailParam) => {
   const renderErrorGuidance = () => {
     switch(errorType) {
       case "invalid_token":
+        return (
+          <>
+            <p>Please ask the patient or administrator to send you correct invitation.</p>
+          </>
+        );
+      case "expired_token":
         return (
           <>
             <p>Please ask the patient or administrator to send you a new invitation.</p>
