@@ -24,7 +24,7 @@ function OAuthCallback() {
 
         // Exchange code for tokens (this happens on your backend for security)
         const backendUrl =
-          process.env.REACT_APP_API_URL || "http://localhost:5000";
+          process.env.REACT_APP_API_URL || "http://smart-wearable-api.vercel.app:5000";
         const tokenResponse = await axios.post(
           `${backendUrl}/api/oauth/token`,
           { code }
