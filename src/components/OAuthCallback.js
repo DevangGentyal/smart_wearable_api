@@ -43,7 +43,7 @@ function OAuthCallback() {
         );
 
         // Send verification to your backend
-        await axios.post(`${backendUrl}/api/verify-email`, {
+        await axios.post(`/api/verify-email`, {
           token: state,
           email: userInfoResponse.data.email,
         });
