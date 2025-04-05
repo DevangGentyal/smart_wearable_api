@@ -14,24 +14,17 @@ function OAuthCallback() {
         const queryParams = new URLSearchParams(location.search);
         const code = queryParams.get("code");
         const state = queryParams.get("state"); // The token we passed as state
-
+      
         // Validate presence of code and state
         if (!code || !state) {
           setError("Invalid or missing authentication parameters.");
           setProcessing(false);
           return;
         }
-
+      
         // Exchange code for tokens (this happens on your backend for security)
-        const backendUrl = ""; // empty since frontend and backend are same origin
-
         const tokenResponse = await axios.post(`/api/oauth-token`, { code });
-
-        await axios.post(`/api/verify-email`, {
-          token: state,
-          email: userInfoResponse.data.email,
-        });
-
+      
         // Get user info with the access token
         const userInfoResponse = await axios.get(
           "https://www.googleapis.com/oauth2/v2/userinfo",
@@ -41,13 +34,13 @@ function OAuthCallback() {
             },
           }
         );
-
+      
         // Send verification to your backend
         await axios.post(`/api/verify-email`, {
           token: state,
           email: userInfoResponse.data.email,
         });
-
+      
         // Redirect back to verification page with success parameters
         navigate(
           `/?token=${state}&email=${userInfoResponse.data.email}&verified=true`
@@ -57,6 +50,7 @@ function OAuthCallback() {
         setError(err.message || "Authentication failed");
         setProcessing(false);
       }
+      
     }
 
     handleOAuthCallback();
