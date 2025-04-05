@@ -53,6 +53,7 @@ function VerificationPage() {
 
 // VerifyFirebase
 const verifyWithFirebase = async (tokenParam, emailParam) => {
+  
     try {
       console.log("Step 1: Fetching guardian_invite with token:", tokenParam);
       setVerificationStep("1. Checking invitation link validity");
