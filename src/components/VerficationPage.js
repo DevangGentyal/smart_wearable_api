@@ -114,10 +114,14 @@ function VerificationPage() {
       const guardianDoc = querySnapshot.docs[0];
       const guardianDocId = guardianDoc.id;
       const guardianDocRef = doc(db, "guardians", guardianDocId);
+      const patientDocRef = doc(db, "patients", patientId);
   
-      console.log("Guardian found, updating patient_id...");
+      console.log("Guardian found, updating patient_id and emails...");
       await updateDoc(guardianDocRef, {
         patient_id: patientId
+      });
+      await updateDoc(patientDocRef, {
+        guardian_accepted: true
       });
   
       console.log("Guardian updated successfully with patient_id");
